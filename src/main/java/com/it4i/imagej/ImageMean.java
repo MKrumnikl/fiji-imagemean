@@ -13,6 +13,7 @@ import net.imagej.Dataset;
 import net.imagej.ImageJ;
 import net.imagej.ops.OpService;
 import net.imglib2.Cursor;
+import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.RealType;
@@ -56,8 +57,32 @@ public class ImageMean<T extends RealType<T>> implements Command {
         final Img<T> image = (Img<T>)currentData.getImgPlus();
 
         System.out.println("numDimensions = " + image.numDimensions());
+            
+        RandomAccess<T> ra = image.randomAccess();
         
-     // create a cursor for the image (the order does not matter)
+        long dimensions[] = new long[image.numDimensions()];
+        image.dimensions(dimensions);
+        
+        for (int i = 0; i < image.numDimensions(); i++) {
+        	System.out.println(i + " = " + dimensions[i]);
+        }
+        
+        double sum = 0;
+        for (int c = 0; c < dimensions[2]; c++) {
+        	for (int x = 0; x < dimensions[0]; x++) {
+        		for (int y = 0; y < dimensions[1]; y++) {
+        			ra.setPosition(x, 0);
+        			ra.setPosition(y, 1);
+        			ra.setPosition(c, 2);
+        			T val = ra.get();
+        			sum += val.getRealDouble();
+        		}
+        	}
+        }
+        
+        System.out.println("average = " + sum / (dimensions[0] * dimensions[1] * dimensions[2]));
+        
+        // create a cursor for the image (the order does not matter)
         Cursor< T > cursor = image.cursor();
         
         T type;
