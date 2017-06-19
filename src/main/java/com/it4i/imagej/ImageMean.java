@@ -37,7 +37,7 @@ import java.util.List;
  * and replace the {@link run} method implementation with your own logic.
  * </p>
  */
-@Plugin(type = Command.class, menuPath = "Plugins>Gauss Filtering")
+@Plugin(type = Command.class, menuPath = "Plugins>Calculate average")
 public class ImageMean<T extends RealType<T>> implements Command {
     //
     // Feel free to add more parameters here...
